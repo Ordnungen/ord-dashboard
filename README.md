@@ -115,7 +115,7 @@ This plugin follows the official Obsidian plugin submission process:
 
 ## Changelog
 
-### 1.0.0
+### 0.0.1
 - Initial release
 - Analytics dashboard with statistics and engagement metrics
 - Spaced repetition system with 5-stage progression
