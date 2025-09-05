@@ -825,8 +825,21 @@ class OrdDashboardModal extends Modal {
                 text: `${t('showMore')} (${files.length - maxNotes} ${t('moreNotes')})`
             });
             showMoreBtn.onclick = () => {
-                // Implement pagination or expand logic here if needed
-                // For now, just hide the button to avoid performance issues
+                // Show all remaining notes
+                const remainingFiles = files.slice(maxNotes);
+                remainingFiles.forEach(file => {
+                    const metaParts = [];
+                    const views = this.noteViews;
+                    const data = views[file.path];
+
+                    if (data) {
+                        metaParts.push(`${t('noteViews')}: ${data.views || 0}`);
+                        const lastOpened = data.lastOpened || file.stat.mtime;
+                        metaParts.push(`${t('noteOpened')} ${this.getTimeAgo(lastOpened)}`);
+                    }
+
+                    this.createCompactNoteItem(section.notesList, file, metaParts.join(' • '));
+                });
                 showMoreBtn.remove();
             };
         }
