@@ -1,0 +1,10 @@
+{
+  "id": "ord-dashboard",
+  "name": "OrdDashboard",
+  "version": "0.0.1",
+  "minAppVersion": "0.15.0",
+  "description": "Comprehensive note analytics and spaced repetition plugin for tracking engagement and optimizing knowledge retention.",
+  "author": "Ordnung",
+  "authorUrl": "https://github.com/Ordnungen",
+  "isDesktopOnly": false
+}

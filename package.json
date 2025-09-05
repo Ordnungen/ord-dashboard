@@ -1,0 +1,38 @@
+{
+  "name": "ord-dashboard",
+  "version": "0.0.1",
+  "description": "Comprehensive note analytics and spaced repetition plugin for Obsidian. Optimized for mobile devices.",
+  "main": "main.js",
+  "scripts": {
+    "build": "echo 'No build process required - plugin is ready for distribution'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'"
+  },
+  "keywords": [
+    "obsidian",
+    "plugin",
+    "analytics",
+    "spaced-repetition",
+    "note-taking",
+    "productivity",
+    "dashboard",
+    "statistics",
+    "mobile-optimized",
+    "cross-platform"
+  ],
+  "author": "Ordnung",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ordnungen/ord-dashboard.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ordnungen/ord-dashboard/issues"
+  },
+  "homepage": "https://github.com/Ordnungen/ord-dashboard#readme",
+  "engines": {
+    "obsidian": ">=0.15.0"
+  },
+  "devDependencies": {},
+  "dependencies": {}
+}
