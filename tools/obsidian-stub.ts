@@ -821,7 +821,13 @@ export class Plugin {
     }
 
     async loadData(): Promise<unknown> { return this.data; }
-    async saveData(data: unknown): Promise<void> { this.data = data; this.savedCount += 1; }
+    /** Только для проверок: сохранение падает, как при полном диске. */
+    failSave = false;
+    async saveData(data: unknown): Promise<void> {
+        if (this.failSave) throw new Error('stub: cannot save data');
+        this.data = data;
+        this.savedCount += 1;
+    }
     get storedData(): unknown { return this.data; }
 
     addStatusBarItem(): FakeElement { return document.createDiv({ cls: 'status-bar-item' }); }

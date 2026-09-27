@@ -8,7 +8,9 @@ import { DASHBOARD_VIEW_TYPE, DashboardView } from './view';
 export default class DashboardPlugin extends Plugin {
     // The store owns settings and activity; it is created with the plugin and
     // loaded in onload().
-    store = new DashboardStore(this);
+    /** О неудаче сохранения говорим один раз за сеанс: иначе будет поток окон. */
+    private saveWarningShown = false;
+    store = new DashboardStore(this, () => this.warnSaveFailure());
     private settingTab: DashboardSettingTab | null = null;
     private ribbonEl: HTMLElement | null = null;
 
@@ -141,6 +143,12 @@ export default class DashboardPlugin extends Plugin {
      * Runs once the vault is loaded: drops records of notes that no longer
      * exist, and seeds activity from file dates on a fresh install.
      */
+    private warnSaveFailure(): void {
+        if (this.saveWarningShown) return;
+        this.saveWarningShown = true;
+        new Notice(t('noticeSaveFailed'));
+    }
+
     private async afterLayoutReady(): Promise<void> {
         const files = this.app.vault.getMarkdownFiles();
         const existing = new Set(files.map((file) => file.path));

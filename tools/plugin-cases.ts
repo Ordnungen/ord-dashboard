@@ -911,6 +911,36 @@ async function main(): Promise<void> {
             !['home', 'file', 'document'].includes(tabIcon), tabIcon);
         await asPlugin(plugin).onunload();
     }
+// ---------------------------------------------------------------------------
+// 22. Сохранение может не пройти
+// ---------------------------------------------------------------------------
+
+{
+    // Полный диск, конфликт синхронизации — сохранить не вышло. Записи остаются в
+    // очереди, но пользователь обязан узнать, что данные пока не сохранены.
+    const { plugin } = await startPlugin({ files: ['a.md'] });
+    Notice.messages = [];
+    (plugin as unknown as { failSave: boolean }).failSave = true;
+
+    await plugin.store.saveNow();
+    // Текст зависит от языка Obsidian, поэтому считаем именно предупреждения о
+    // сохранении, а не сверяем строку целиком.
+    const warnings = (): number => Notice.messages.filter(
+        (message) => message.startsWith('ORDdashboard: ') && /save|сохранить/.test(message)).length;
+    assert('22.1 о неудаче сохранения сказано вслух', warnings() === 1,
+        Notice.messages.join(' | ') || 'уведомлений нет');
+
+    await plugin.store.saveNow();
+    assert('22.2 повтор не заливает экран окнами', warnings() === 1,
+        Notice.messages.join(' | ') || 'уведомлений нет');
+
+    (plugin as unknown as { failSave: boolean }).failSave = false;
+    await plugin.store.saveNow();
+    assert('22.3 когда запись снова проходит, новых предупреждений нет',
+        warnings() === 1 && Notice.messages.length > 0,
+        Notice.messages.join(' | ') || 'уведомлений нет');
+}
+
 
     say(`\nпроверок: ${checks}, провалено: ${failures}`);
     process.exitCode = failures === 0 ? 0 : 1;

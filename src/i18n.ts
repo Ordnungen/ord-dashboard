@@ -115,6 +115,7 @@ const EN = {
     noticeClearFailed: 'ORDdashboard: could not clear analytics data',
     noticeSeeded: 'ORDdashboard: activity seeded for __count__ notes',
     noticeSeedFailed: 'ORDdashboard: could not seed activity',
+    noticeSaveFailed: 'ORDdashboard: could not save analytics data',
 };
 
 export type LangKey = keyof typeof EN;
@@ -232,6 +233,7 @@ const RU: Record<LangKey, string> = {
     noticeClearFailed: 'ORDdashboard: не удалось очистить данные аналитики',
     noticeSeeded: 'ORDdashboard: активность заполнена для __count__ заметок',
     noticeSeedFailed: 'ORDdashboard: не удалось заполнить активность',
+    noticeSaveFailed: 'ORDdashboard: не удалось сохранить данные аналитики',
 };
 
 // ---------------------------------------------------------------------------

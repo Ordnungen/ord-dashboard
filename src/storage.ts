@@ -62,7 +62,10 @@ export class DashboardStore {
     private saveTimer: number | null = null;
     private pending = false;
 
-    constructor(plugin: Plugin) {
+    constructor(plugin: Plugin,
+        /** Зовётся, когда сохранить не удалось: сказать об этом должен плагин. */
+        private readonly onSaveError?: () => void,
+    ) {
         this.plugin = plugin;
         this.data = {
             version: SCHEMA_VERSION,
@@ -444,8 +447,11 @@ export class DashboardStore {
         try {
             await this.plugin.saveData(this.data);
         } catch (error) {
+            // Записи остаются в `pending` и попадут в следующую попытку, но молчать
+            // об этом нельзя: пользователь думает, что данные уже сохранены.
             this.pending = true;
             console.error('ORDdashboard: could not save analytics data', error);
+            this.onSaveError?.();
         }
     }
 
