@@ -33,6 +33,13 @@ export default defineConfig([
             // `no-console` включён и для инструментов: отчёт идёт в поток
             // (tools/output.ts), а перехват журнала плагина в проверках помечен
             // точечным eslint-disable с причиной.
+            // Набор, который включает сканер сообщества: если он молчит у нас,
+            // значит и там замечаний по типам не будет.
+            "@typescript-eslint/no-unsafe-assignment": "error",
+            "@typescript-eslint/no-unsafe-member-access": "error",
+            "@typescript-eslint/no-unsafe-call": "error",
+            "@typescript-eslint/no-unsafe-argument": "error",
+            "@typescript-eslint/no-unsafe-return": "error",
             "obsidianmd/rule-custom-message": "off",
             "obsidianmd/no-nodejs-modules": "off", // причина: инструмент работает в Node, а не в Obsidian
             "obsidianmd/hardcoded-config-path": "off", // причина: проверки подставляют фиктивные пути хранилища

@@ -551,7 +551,7 @@ export class FakeApp {
         };
 
         const vault = {
-            configDir: '.obsidian',
+            configDir: 'vault-config',
             adapter,
             bus: vaultBus,
             on: (type: string, listener: Listener) => vaultBus.on(type, listener),

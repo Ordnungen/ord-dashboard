@@ -39,7 +39,7 @@ function fakePlugin(initial: unknown = { version: SCHEMA_VERSION, settings: {}, 
     const stub: Stub = { plugin: undefined as never, saved: null, initial };
     const plugin = {
         manifest: { id: 'ord-dashboard' },
-        app: { vault: { configDir: '.obsidian', adapter: { exists: async () => false } } },
+        app: { vault: { configDir: 'vault-config', adapter: { exists: async () => false } } },
         loadData: async () => stub.initial,
         saveData: async (data: unknown) => { stub.saved = data; },
         registerInterval: () => undefined,
@@ -153,7 +153,7 @@ async function main(): Promise<void> {
     // ------------------------------------------------- 4. Учётные пути
     {
         assert('4.1 обычная заметка учитывается', isTrackablePath('Работа/Заметка.md') === true);
-        assert('4.2 скрытые папки не учитываются', isTrackablePath('.obsidian/plugins/x/file.md') === false);
+        assert('4.2 скрытые папки не учитываются', isTrackablePath('.hidden/plugins/x/file.md') === false);
         assert('4.3 служебные папки не учитываются', isTrackablePath('.trash/Заметка.md') === false);
         assert('4.4 не Markdown не учитывается', isTrackablePath('файл.png') === false);
         assert('4.5 регистр расширения не важен', isTrackablePath('Заметка.MD') === true);
@@ -178,7 +178,7 @@ async function main(): Promise<void> {
 
         const data = sanitizeDashboardData({
             version: 'сто',
-            notes: { 'a.md': { views: 1 }, 'b.md': 'мусор', '.obsidian/x.md': { views: 1 } },
+            notes: { 'a.md': { views: 1 }, 'b.md': 'мусор', '.hidden/x.md': { views: 1 } },
         });
         assert('5.4 версия схемы приведена к текущей', data.version === SCHEMA_VERSION, String(data.version));
         assert('5.5 неверные записи заметок выброшены', Object.keys(data.notes).length === 1,
@@ -197,7 +197,7 @@ async function main(): Promise<void> {
                 refreshData: { stage: 2, lastRefresh: NOW - 4 * DAY_MS },
             },
             'b.md': { viewCount: 0, history: [], historyEdit: [] },
-            '.obsidian/x.md': { viewCount: 7, history: [NOW] },
+            '.hidden/x.md': { viewCount: 7, history: [NOW] },
             'плохой': 'мусор',
         }, NOW);
         assert('5.9 перенесены только записи с активностью', Object.keys(migrated.notes).length === 1,
@@ -427,14 +427,14 @@ async function main(): Promise<void> {
             'легаси.md': { viewCount: 3, history: [Date.now()], historyEdit: [] },
         });
         const files = new Map<string, string>([
-            ['.obsidian/plugins/ord-dashboard/note-views.json', legacyContent],
+            ['vault-config/plugins/ord-dashboard/note-views.json', legacyContent],
         ]);
         const renamed: string[] = [];
         const legacyPlugin = {
             manifest: { id: 'ord-dashboard' },
             app: {
                 vault: {
-                    configDir: '.obsidian',
+                    configDir: 'vault-config',
                     adapter: {
                         exists: async (path: string) => files.has(path),
                         read: async (path: string) => files.get(path) ?? '',
@@ -461,14 +461,14 @@ async function main(): Promise<void> {
 
         // Старый файл есть, но записей в нём нет: не трогаем
         const emptyFiles = new Map<string, string>([
-            ['.obsidian/plugins/ord-dashboard/note-views.json', JSON.stringify({})],
+            ['vault-config/plugins/ord-dashboard/note-views.json', JSON.stringify({})],
         ]);
         const untouched: string[] = [];
         const emptyPlugin = {
             manifest: { id: 'ord-dashboard' },
             app: {
                 vault: {
-                    configDir: '.obsidian',
+                    configDir: 'vault-config',
                     adapter: {
                         exists: async (path: string) => emptyFiles.has(path),
                         read: async (path: string) => emptyFiles.get(path) ?? '',
@@ -490,7 +490,7 @@ async function main(): Promise<void> {
             manifest: { id: 'ord-dashboard' },
             app: {
                 vault: {
-                    configDir: '.obsidian',
+                    configDir: 'vault-config',
                     adapter: {
                         exists: async () => true,
                         read: async () => { throw new Error('нет доступа'); },

@@ -47,7 +47,7 @@ const PLACE_FOLDER_LIMIT = 50;
  */
 function vaultGraphParams(vault: string): GraphParams {
     if (!vault) return { ...CORE_DEFAULTS };
-    for (const dir of ['.obsidian', '.config/obsidian', 'config']) {
+    for (const dir of configFolders(vault)) {
         try {
             const raw = fs.readFileSync(`${vault}/${dir}/graph.json`, 'utf8');
             return displayParamsFromVault(JSON.parse(raw) as unknown);
@@ -56,6 +56,33 @@ function vaultGraphParams(vault: string): GraphParams {
         }
     }
     return { ...CORE_DEFAULTS };
+}
+
+/**
+ * Папки конфигурации Obsidian в хранилище. Имя не угадываем: его можно
+ * переименовать в настройках, поэтому признак — папка с `app.json`, а рядом в
+ * ней и `graph.json`. Второй проход — на случай хранилища, где `app.json` нет.
+ */
+function configFolders(vault: string): string[] {
+    const top = (): string[] => {
+        try {
+            return fs.readdirSync(vault, { withFileTypes: true })
+                .filter(entry => entry.isDirectory())
+                .map(entry => entry.name);
+        } catch {
+            return [];
+        }
+    };
+    const withFile = (name: string, file: string): boolean => {
+        try {
+            return fs.existsSync(`${vault}/${name}/${file}`);
+        } catch {
+            return false;
+        }
+    };
+    const named = top().filter(name => withFile(name, 'app.json'));
+    if (named.length > 0) return named;
+    return top().filter(name => name.startsWith('.') && withFile(name, 'graph.json'));
 }
 
 function parseArgs(argv: string[]): Options {    const positional: string[] = [];
