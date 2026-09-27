@@ -52,7 +52,7 @@ function vaultGraphParams(vault: string): GraphParams {
             const raw = fs.readFileSync(`${vault}/${dir}/graph.json`, 'utf8');
             return displayParamsFromVault(JSON.parse(raw) as unknown);
         } catch {
-            continue;
+            // Нет файла — пробуем следующую папку.
         }
     }
     return { ...CORE_DEFAULTS };

@@ -30,10 +30,10 @@ const TICKS_PER_FRAME_LARGE = 2;
 export class GraphLayout {
     readonly x: Float32Array;
     readonly y: Float32Array;
-    private vx: Float32Array;
-    private vy: Float32Array;
-    private degrees: Float32Array;
-    private edges: GraphEdge[];
+    private readonly vx: Float32Array;
+    private readonly vy: Float32Array;
+    private readonly degrees: Float32Array;
+    private readonly edges: GraphEdge[];
     private params: GraphParams;
     private alpha = 1;
     private random: () => number;
@@ -59,7 +59,7 @@ export class GraphLayout {
             this.degrees[edge.target] = (this.degrees[edge.target] ?? 0) + 1;
         }
 
-        // Core behaviour: everything starts at the origin and spreads out.
+        // Core behavior: everything starts at the origin and spreads out.
         for (let index = 0; index < nodes.length; index++) {
             const angle = this.random() * Math.PI * 2;
             const radius = this.random() * 1.5;
@@ -74,9 +74,6 @@ export class GraphLayout {
         return this.x.length;
     }
 
-    get alphaValue(): number {
-        return this.alpha;
-    }
 
     get frozen(): boolean {
         return this.alpha <= SIM_CONSTANTS.alphaMin;
@@ -199,7 +196,7 @@ export class GraphLayout {
 
     /**
      * forceCollide: every node carries the core radius of 60, so a pair keeps
-     * 120 units between centres. The core measures distances from `x + vx`, and
+     * 120 units between centers. The core measures distances from `x + vx`, and
      * weights the push by the squared radii — with equal radii that is a 50/50
      * split.
      */

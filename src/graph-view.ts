@@ -64,9 +64,9 @@ const FOCUS_REBUILD_DELAY_MS = 600;
 export class GraphBlock {
     readonly element: HTMLElement;
 
-    private options: GraphBlockOptions;
-    private iconEl: HTMLSpanElement;
-    private statsEl: HTMLElement;
+    private readonly options: GraphBlockOptions;
+    private readonly iconEl: HTMLSpanElement;
+    private readonly statsEl: HTMLElement;
     private statusEl: HTMLElement;
     private canvasWrap: HTMLElement;
     private canvas: HTMLCanvasElement;
@@ -189,7 +189,7 @@ export class GraphBlock {
         this.buildToken += 1;
         const token = this.buildToken;
         this.cancelPending();
-        // Colours come from the theme's own CSS classes, and those need the
+        // Colors come from the theme's own CSS classes, and those need the
         // element to be in the document — rebuild runs after the panel attached it.
         this.theme = readGraphTheme(this.element);
         this.layout = null;
@@ -251,11 +251,11 @@ export class GraphBlock {
 
         const attachments: string[] = [];
         const unresolved: string[] = [];
-        const resolve = (linktext: string): void => {
-            if (linktext === '' || linktext.startsWith('#')) return;
-            const target = this.options.app.metadataCache.getFirstLinkpathDest(linktext, path);
+        const resolve = (linkText: string): void => {
+            if (linkText === '' || linkText.startsWith('#')) return;
+            const target = this.options.app.metadataCache.getFirstLinkpathDest(linkText, path);
             if (!target) {
-                if (!unresolved.includes(linktext)) unresolved.push(linktext);
+                if (!unresolved.includes(linkText)) unresolved.push(linkText);
                 return;
             }
             if (target.extension !== 'md' && !attachments.includes(target.path)) attachments.push(target.path);
@@ -547,7 +547,7 @@ export class GraphBlock {
             return;
         }
         if (previousWidth > 0 && previousHeight > 0) {
-            // Keep the view centred when the panel is resized.
+            // Keep the view centerd when the panel is resized.
             this.viewport.offsetX += (width - previousWidth) / 2;
             this.viewport.offsetY += (height - previousHeight) / 2;
         } else {
@@ -681,7 +681,7 @@ export class GraphBlock {
         canvas.addEventListener('wheel', (event) => {
             event.preventDefault();
             this.stopAutoFit();
-            // Core zoom: 1.5^(-delta / 120), with the zoom centre under the cursor
+            // Core zoom: 1.5^(-delta / 120), with the zoom center under the cursor
             // when zooming in and in the middle of the panel when zooming out.
             let delta = event.deltaY;
             if (event.deltaMode === 1) delta *= 40;

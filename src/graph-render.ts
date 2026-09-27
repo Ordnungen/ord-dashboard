@@ -13,8 +13,8 @@
 //                 screen size and sits 15 px lower
 //   arrows      = optional, fade in with zoom (2 * (scale - 0.3), clamped to 1)
 //
-// Colours are read from the very same CSS classes the core uses, so any theme
-// that styles the graph styles ours too — including the per-type colours of
+// Colors are read from the very same CSS classes the core uses, so any theme
+// that styles the graph styles ours too — including the per-type colors of
 // tags, attachments and unresolved links.
 // ---------------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ export interface ThemeColor {
     alpha: number;
 }
 
-/** Slots mirror the core's colour map (`u$` in app.js). */
+/** Slots mirror the core's color map (`u$` in app.js). */
 export interface GraphTheme {
     node: ThemeColor;
     nodeFocused: ThemeColor;
@@ -78,7 +78,7 @@ export interface GraphScene {
 
 export type RenderParams = GraphScene & { ctx: CanvasRenderingContext2D };
 
-/** Maps our colour slots to the core graph's CSS classes. */
+/** Maps our color slots to the core graph's CSS classes. */
 const COLOR_CLASSES: Record<keyof GraphTheme, string> = {
     node: 'color-fill',
     nodeFocused: 'color-fill-focused',
@@ -109,13 +109,13 @@ const FALLBACKS: Record<keyof GraphTheme, ThemeColor> = {
 export const FADE_ALPHA = SIM_CONSTANTS.fadeAlpha;
 
 /**
- * Reads the colours exactly like the core does: a probe element carrying the
- * graph's CSS class, its computed colour and its opacity.
+ * Reads the colors exactly like the core does: a probe element carrying the
+ * graph's CSS class, its computed color and its opacity.
  *
  * The core appends the probe to `document.body`, and that matters: the palette
  * (`--graph-node`, `--graph-line`, …) is declared on `body`, so an element that is
  * not attached to the document resolves nothing and silently falls back to
- * inherited colours — the reason a graph can come out all white.
+ * inherited colors — the reason a graph can come out all white.
  */
 export function readGraphTheme(host: HTMLElement): GraphTheme {
     const doc = host.ownerDocument;
@@ -199,7 +199,7 @@ export function toScreen(value: number, offset: number, scale: number): number {
     return value * scale + offset;
 }
 
-/** Fill colour of a node: colour group, then node type, then the default. */
+/** Fill color of a node: color group, then node type, then the default. */
 export function nodeColor(node: GraphNode, theme: GraphTheme): ThemeColor {
     if (node.color) {
         return { color: node.color, alpha: node.colorAlpha ?? 1 };
@@ -343,7 +343,7 @@ function drawLinks(params: RenderParams, isRelated: (index: number) => boolean):
         const length = Math.hypot(dx, dy);
         if (length < 0.01) continue;
 
-        // Lines run between the circles, not between their centres.
+        // Lines run between the circles, not between their centers.
         const sourceRadius = screenRadius(sourceNode, params, viewport.scale);
         const targetRadius = screenRadius(targetNode, params, viewport.scale);
         const startX = sourceX + (dx / length) * sourceRadius;
@@ -403,8 +403,8 @@ function drawNodes(params: RenderParams, isRelated: (index: number) => boolean):
 
         if (x + radius < 0 || y + radius < 0 || x - radius > params.width || y - radius > params.height) continue;
 
-        // The core gives the hovered node the highlight colour, everything else
-        // its own colour: a colour group, then the colour of its node type.
+        // The core gives the hovered node the highlight color, everything else
+        // its own color: a color group, then the color of its node type.
         const fill = isHovered ? theme.nodeHighlight : nodeColor(node, theme);
         ctx.globalAlpha = fill.alpha * nodeAlpha(node, related, isHovered, isFocused);
         ctx.fillStyle = fill.color;
@@ -413,7 +413,7 @@ function drawNodes(params: RenderParams, isRelated: (index: number) => boolean):
         ctx.fill();
 
         if (isHovered || isFocused) {
-            // The core's ring colour, a little thicker for the open note.
+            // The core's ring color, a little thicker for the open note.
             ctx.globalAlpha = theme.nodeFocused.alpha;
             ctx.strokeStyle = theme.nodeFocused.color;
             ctx.lineWidth = isFocused && !isHovered ? 2 : 1;

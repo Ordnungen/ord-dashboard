@@ -50,7 +50,7 @@ export interface GraphNode {
     /** Number of links this node has inside the drawn graph. */
     degree: number;
     type: GraphNodeType;
-    /** Colour from the vault's colour groups, if any matched. */
+    /** Color from the vault's color groups, if any matched. */
     color?: string;
     colorAlpha?: number;
     /** An index note: connected to a large part of the vault, not to this note. */
@@ -108,7 +108,7 @@ export interface SamplerOptions {
     /** Notes without outgoing links, added as isolated nodes like the core does. */
     orphanPaths?: string[];
     maxOrphans?: number;
-    /** Colour groups from the vault's graph settings. */
+    /** Color groups from the vault's graph settings. */
     colorGroups?: ColorGroup[];
     /** The note that is open: always part of a vault overview, always the root locally. */
     focusPath?: string;
@@ -154,7 +154,7 @@ const MAX_CANDIDATES = 20000;
 
 /** Smallest-work binary min-heap that keeps the `limit` best entries. */
 class DegreeHeap {
-    private items: GraphNode[] = [];
+    private readonly items: GraphNode[] = [];
 
     constructor(private limit: number) {}
 
@@ -218,7 +218,7 @@ export function titleFromPath(path: string): string {
 
 /**
  * Links may point at any file, not only at notes. The core draws everything that
- * is not a note as an attachment (its own colour and size), and so does the panel:
+ * is not a note as an attachment (its own color and size), and so does the panel:
  * a picture reached through a link must not look like a note.
  */
 function typeForPath(path: string): GraphNodeType {
@@ -235,7 +235,7 @@ export class OverviewSampler {
     private selected = new Map<string, number>();
     private nodes: GraphNode[] = [];
     private edges: GraphEdge[] = [];
-    private edgeKeys = new Set<string>();
+    private readonly edgeKeys = new Set<string>();
     /** Local traversal state. */
     private hops = new Map<string, number>();
     private queue: string[] = [];
@@ -259,13 +259,13 @@ export class OverviewSampler {
     private mass = new Float64Array(0);
     private massNext = new Float64Array(0);
     private rootIndex = 0;
-    private lift = new Map<string, number>();
+    private readonly lift = new Map<string, number>();
     private candidates: string[] = [];
     private filteredOut = false;
     private trimmedByBudget = false;
-    private noteTags = new Map<string, string[]>();
-    private noteExtras = new Map<string, GraphExtras>();
-    private tagCounts = new Map<string, number>();
+    private readonly noteTags = new Map<string, string[]>();
+    private readonly noteExtras = new Map<string, GraphExtras>();
+    private readonly tagCounts = new Map<string, number>();
     private chosenTags: string[] = [];
     private extraBudget: number;
     private extrasUsed = 0;
@@ -398,7 +398,7 @@ export class OverviewSampler {
             if (path === undefined) continue;
 
             const hop = this.hops.get(path) ?? 0;
-            // Every visited note is a candidate, whether or not it has its own links.
+            // Every visited note is a candidate, whether it has its own links.
             const source = this.addNoteNode(path);
             if (hop >= this.depth) continue;
             if (this.nodes.length >= MAX_CANDIDATES) {
@@ -717,7 +717,7 @@ export class OverviewSampler {
         const direct: GraphNode[] = [];
         for (const node of this.nodes) {
             // Attachments reached through links are picked like notes: they are part
-            // of the picture, only drawn in their own colour (see `typeForPath`).
+            // of the picture, only drawn in their own color (see `typeForPath`).
             const isNote = node.type === 'note';
             if (!isNote && node.type !== 'attachment') continue;
             const path = node.path;
@@ -1103,7 +1103,7 @@ export class OverviewSampler {
         if (highNode) highNode.degree += 1;
     }
 
-    /** Colours from the vault's colour groups; the last matching group wins. */
+    /** Colors from the vault's color groups; the last matching group wins. */
     private applyColorGroups(groups: ColorGroup[]): void {
         if (groups.length === 0) return;
         for (const node of this.nodes) {

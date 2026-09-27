@@ -125,7 +125,7 @@ export class DashboardView extends ItemView {
         this.graphBlock.setActive(this.app.workspace.getActiveFile()?.path ?? '');
         this.graphBlock.rebuild();
 
-        // Theme switches must repaint the graph: its colours come from the theme.
+        // Theme switches must repaint the graph: its colors come from the theme.
         // The open note follows the graph too, so the panel always shows it.
         if (!this.graphListenersRegistered) {
             this.graphListenersRegistered = true;

@@ -53,7 +53,7 @@ export const CORE_DEFAULTS: GraphParams = {
 
 /** Core constants of the simulation and of the renderer, straight from the app. */
 export const SIM_CONSTANTS = {
-    /** Collide radius of a single node: a pair keeps twice that between centres. */
+    /** Collide radius of a single node: a pair keeps twice that between centers. */
     collideRadius: 60,
     collideStrength: 0.5,
     /** Velocity decay applied to both axes on every tick. */
@@ -88,7 +88,7 @@ function toFlag(value: unknown, fallback: boolean): boolean {
     return typeof value === 'boolean' ? value : fallback;
 }
 
-/** Core stores colours as `{ a, rgb }` with a 24-bit integer. */
+/** Core stores colors as `{ a, rgb }` with a 24-bit integer. */
 function toColorGroup(value: unknown): ColorGroup | null {
     if (typeof value !== 'object' || value === null) return null;
     const raw = value as { query?: unknown; color?: unknown };
@@ -132,7 +132,7 @@ export function paramsFromVaultSettings(raw: unknown): GraphParams {
 
 /**
  * Presentation parameters only: node and line size, text fade, arrows, the node
- * type switches and colour groups — everything that makes the panel look like
+ * type switches and color groups — everything that makes the panel look like
  * the core graph, read from the vault's own settings.
  *
  * The *forces* deliberately stay at the core defaults: a panel shows a few
@@ -175,7 +175,7 @@ export async function readVaultGraphParams(app: App): Promise<GraphParams> {
 // The core resolves these with its internal search engine, which is not exposed
 // to plugins. The common operators (`tag:`, `path:`, `file:`, plain text, minus
 // for negation, quotes) are supported here; a group that uses anything else is
-// skipped entirely, so a node never gets a colour the core would not give it.
+// skipped entirely, so a node never gets a color the core would not give it.
 // ---------------------------------------------------------------------------
 
 export interface ColorMatchTarget {
@@ -240,7 +240,7 @@ function compileQuery(query: string): Matcher[] | null {
     return matchers.length > 0 ? matchers : null;
 }
 
-/** Returns the colour of the last matching group, like the core's list order. */
+/** Returns the color of the last matching group, like the core's list order. */
 export function matchColorGroup(
     groups: ColorGroup[],
     target: ColorMatchTarget,

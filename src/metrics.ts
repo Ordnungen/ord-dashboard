@@ -45,9 +45,6 @@ export interface ReviewItem {
     isOverdue: boolean;
 }
 
-export function activityFor(notes: Record<string, NoteActivity>, path: string): NoteActivity | undefined {
-    return notes[path];
-}
 
 export function computeTotals(files: TFile[], notes: Record<string, NoteActivity>, now: number): VaultTotals {
     let views = 0;
