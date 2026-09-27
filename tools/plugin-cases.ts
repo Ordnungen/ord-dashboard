@@ -7,7 +7,7 @@
 
 import { say } from './output';
 import {
-    clock, FakeApp, installGlobals, Modal, Notice, setLanguage, TFile, TFolder,
+    clock, FakeApp,  Modal, Notice, setLanguage, TFile, TFolder,
     type FakeElement, type WorkspaceLeaf,
 } from './obsidian-stub';
 import { fs } from './node-io';
@@ -155,8 +155,7 @@ async function startPlugin(options: {
 }
 
 async function main(): Promise<void> {
-    installGlobals();
-
+    
     // Отказы внутри асинхронного кода плагина иначе не видно: они не ломают
     // проверку, но означают, что что-то не работает. Печатаем их как провал.
     process.on('unhandledRejection', (reason: unknown) => {

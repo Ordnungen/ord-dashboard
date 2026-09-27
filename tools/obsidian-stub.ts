@@ -361,17 +361,23 @@ export function computedStyle(element: FakeElement): {
 }
 
 /** Устанавливает глобальные объекты браузера, которые использует плагин. */
-export function installGlobals(): void {
-    const globals = globalThis as Record<string, unknown>;
-    globals.createDiv = (options?: ElementOptions) => document.createDiv(options);
-    globals.createSpan = (options?: ElementOptions) => document.createSpan(options);
-    globals.createEl = (tag: string, options?: ElementOptions) => document.createEl(tag, options);
-    globals.document = document;
-    globals.window = fakeWindow;
-    globals.getComputedStyle = (element: FakeElement) => computedStyle(element);
-    // Плагин берёт «сейчас» из Date.now: в проверках время идёт через clock.
-    Date.now = () => clock.now();
-}
+/**
+ * Браузерные имена для кода плагина: `document`, `window`, помощники создания
+ * элементов и стили. Сборка подставляет их через `inject` (`tools/browser.ts`),
+ * а не записью в глобальный объект: проверка сообщества запрещает `globalThis`, и
+ * права — инструменты не должны менять окружение.
+ */
+export const createDiv = (options?: ElementOptions): FakeElement => document.createDiv(options);
+
+export const createSpan = (options?: ElementOptions): FakeElement => document.createSpan(options);
+
+export const createEl = (tag: string, options?: ElementOptions): FakeElement => document.createEl(tag, options);
+
+export const getComputedStyle = (element: FakeElement): { color: string; opacity: string; getPropertyValue: () => string } =>
+    computedStyle(element);
+
+// Плагин берёт «сейчас» из Date.now: в проверках время идёт через clock.
+Date.now = () => clock.now();
 
 // ---------------------------------------------------------------------------
 // Obsidian API
