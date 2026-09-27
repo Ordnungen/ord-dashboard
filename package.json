@@ -1,6 +1,6 @@
 {
     "name": "ord-dashboard",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "description": "Shows note analytics and lists the notes that are ready to refresh.",
     "main": "main.js",
     "type": "module",
