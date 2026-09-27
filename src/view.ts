@@ -64,6 +64,9 @@ export class DashboardView extends ItemView {
     }
 
     async onOpen(): Promise<void> {
+        // Панель помечает свой контейнер сама: правило через `:has` сканер
+        // справедливо считает дорогим, а класс не задевает чужие виды.
+        this.containerEl.addClass('ord-dashboard-host');
         this.addHeaderActions();
         this.ensureLayout();
         this.render();
@@ -191,6 +194,7 @@ export class DashboardView extends ItemView {
     }
 
     async onClose(): Promise<void> {
+        this.containerEl.removeClass('ord-dashboard-host');
         if (this.searchTimer !== null) {
             window.clearTimeout(this.searchTimer);
             this.searchTimer = null;

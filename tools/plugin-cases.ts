@@ -175,7 +175,7 @@ async function main(): Promise<void> {
         assert('1.2 иконка в ленте создана', fake.ribbon !== null);
         assert('1.3 вкладка настроек создана', tabOf(plugin) !== null);
         assert('1.4 панель открыта', viewOf(plugin) !== null);
-        await workspaceOf(plugin.app).openFile(plugin.app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(plugin.app).openFile((plugin.app as unknown as FakeApp).vault.fileAt('a.md'));
         clock.advance(200);
         await fake.onunload();
         assert('1.5 выгрузка сохраняет данные', fake.storedData !== null);
@@ -188,14 +188,14 @@ async function main(): Promise<void> {
         const views = (path: string): number => (store.data.notes[path] as { views: number } | undefined)?.views ?? 0;
         const edits = (path: string): number => (store.data.notes[path] as { edits: number } | undefined)?.edits ?? 0;
 
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         assert('2.1 открытие заметки засчитано', views('a.md') === 1, Object.keys(store.data.notes).join(', '));
 
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         assert('2.2 повторное открытие сразу не засчитано', views('a.md') === 1, String(views('a.md')));
 
         clock.advance(31_000);
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         assert('2.3 открытие спустя троттлинг засчитано', views('a.md') === 2, String(views('a.md')));
 
         await vaultOf(app).modify('a.md', 'текст');
@@ -204,7 +204,7 @@ async function main(): Promise<void> {
 
         plugin.setSetting('trackViews', false);
         clock.advance(31_000);
-        await workspaceOf(app).openFile(app.vault.getFileByPath('b.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('b.md'));
         assert('2.5 выключенный учёт просмотров не пишет', store.data.notes['b.md'] === undefined,
             Object.keys(store.data.notes).join(', '));
         plugin.setSetting('trackViews', true);
@@ -218,7 +218,7 @@ async function main(): Promise<void> {
         assert('2.7 удаление убирает запись', store.data.notes['a.md'] === undefined,
             Object.keys(store.data.notes).join(', '));
 
-        await workspaceOf(app).openFile(app.vault.getFileByPath('папка/d.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('папка/d.md'));
         assert('2.8a открытие вложенной заметки засчитано', store.data.notes['папка/d.md'] !== undefined,
             Object.keys(store.data.notes).join(', '));
         await vaultOf(app).rename('папка/d.md', 'папка/е.md');
@@ -251,7 +251,7 @@ async function main(): Promise<void> {
     {
         const { app, plugin } = await startPlugin({ files: ['a.md'] });
         const store = storeOf(plugin);
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         assert('4.1 перед очисткой данные есть', store.trackedCount === 1, String(store.trackedCount));
 
         asPlugin(plugin).promptClearData();
@@ -280,7 +280,7 @@ async function main(): Promise<void> {
             files: ['a.md', 'b.md', 'c.md'],
             links: { 'a.md': { 'b.md': 1 }, 'b.md': { 'c.md': 1 } },
         });
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         await vaultOf(app).modify('a.md', 'текст');
         clock.advance(1000);
 
@@ -331,7 +331,7 @@ async function main(): Promise<void> {
             files: ['Смета.md', 'Отчёт.md', 'Прочее.md'],
             links: { 'Смета.md': { 'Отчёт.md': 1 } },
         });
-        await workspaceOf(app).openFile(app.vault.getFileByPath('Смета.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('Смета.md'));
         clock.advance(1000);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');
@@ -385,7 +385,7 @@ async function main(): Promise<void> {
         clock.advance(200);
         assert('7.3 вписывание по кнопке не ломает панель', viewOf(plugin) !== null);
 
-        await workspaceOf(app).openFile(app.vault.getFileByPath('b.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('b.md'));
         clock.advance(700);
         assert('7.4 переход к заметке перестраивает граф', viewOf(plugin) !== null);
 
@@ -489,7 +489,7 @@ async function main(): Promise<void> {
         const { app, plugin } = await startPlugin({
             files: ['первая/Заметка.md', 'вторая/Заметка.md'],
         });
-        await workspaceOf(app).openFile(app.vault.getFileByPath('первая/Заметка.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('первая/Заметка.md'));
         clock.advance(1000);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');
@@ -550,7 +550,7 @@ async function main(): Promise<void> {
         assert('13.3 глубина из строки прочитана',
             (fake.config as { graphDepth: number }).graphDepth === 3, String(fake.config.graphDepth));
 
-        await workspaceOf(app).openFile(app.vault.getFileByPath('b.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('b.md'));
         clock.advance(100);
         await storeOf(plugin).clearAll();
         const saved = fake.storedData as { settings: Record<string, unknown>; notes: Record<string, unknown> };
@@ -592,7 +592,7 @@ async function main(): Promise<void> {
             links: { 'a.md': { 'b.md': 1 } },
             language: 'ru',
         });
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         clock.advance(1000);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');
@@ -687,7 +687,7 @@ async function main(): Promise<void> {
             views: 3, lastOpened: longAgo, edits: 1, lastEdited: longAgo,
             reviewStage: 0, reviewStartedAt: longAgo, viewsByMonth: {}, editsByMonth: {},
         };
-        await workspaceOf(app).openFile(app.vault.getFileByPath('b.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('b.md'));
         clock.advance(1000);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');
@@ -790,7 +790,7 @@ async function main(): Promise<void> {
             views: 250_000, lastOpened: longAgo, edits: 241_290, lastEdited: longAgo,
             reviewStage: 1, reviewStartedAt: longAgo, viewsByMonth: {}, editsByMonth: {},
         };
-        await workspaceOf(app).openFile(app.vault.getFileByPath('b.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('b.md'));
         await advance(1200);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');
@@ -833,7 +833,7 @@ async function main(): Promise<void> {
             files: ['a.md', 'b.md', 'c.md'],
             links: { 'a.md': { 'b.md': 1 }, 'b.md': { 'c.md': 1 } },
         });
-        await workspaceOf(app).openFile(app.vault.getFileByPath('a.md') as TFile);
+        await workspaceOf(app).openFile(app.vault.fileAt('a.md'));
         await advance(2500);
         const view = viewOf(plugin);
         if (!view) throw new Error('панель не открыта');

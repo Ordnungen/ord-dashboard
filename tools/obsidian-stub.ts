@@ -495,7 +495,7 @@ class EventBus {
 export class FakeApp {
     vault: {
         configDir: string; adapter: FakeAdapter; getMarkdownFiles: () => TFile[];
-        getFileByPath: (path: string) => TFile | null; getAbstractFileByPath: (path: string) => TFile | TFolder | null;
+        getFileByPath: (path: string) => TFile | null; fileAt: (path: string) => TFile; folderAt: (path: string) => TFolder; getAbstractFileByPath: (path: string) => TFile | TFolder | null;
         on: (type: string, listener: Listener) => { type: string }; trigger: (type: string, ...args: unknown[]) => void;
         bus: EventBus; create: (path: string, content: string) => Promise<TFile>;
         modify: (path: string, content: string) => Promise<void>; delete: (path: string) => Promise<void>;
@@ -558,6 +558,16 @@ export class FakeApp {
             trigger: (type: string, ...args: unknown[]) => vaultBus.trigger(type, ...args),
             getMarkdownFiles: () => [...files.values()].filter((file) => file.extension.toLowerCase() === 'md'),
             getFileByPath: (path: string) => files.get(path) ?? null,
+        fileAt: (path: string): TFile => {
+            const found = files.get(path);
+            if (!found) throw new Error(`в хранилище нет файла ${path}`);
+            return found;
+        },
+        folderAt: (path: string): TFolder => {
+            const found = folders.get(path);
+            if (!found) throw new Error(`в хранилище нет папки ${path}`);
+            return found;
+        },
             getAbstractFileByPath: (path: string): TFile | TFolder | null =>
                 files.get(path) ?? folders.get(path) ?? null,
             create: async (path: string, content: string): Promise<TFile> => {

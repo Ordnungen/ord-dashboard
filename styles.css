@@ -1,7 +1,7 @@
 /* ORDdashboard styles */
 
 /* Two zones: scrolling content and the link graph pinned to the bottom. */
-.view-content:has(> .ord-dashboard) {
+.view-content.ord-dashboard-host {
     overflow: hidden;
     padding: 0;
 }
