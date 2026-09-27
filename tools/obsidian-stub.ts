@@ -398,7 +398,14 @@ export function debounce<T extends (...args: never[]) => unknown>(fn: T, timeout
     return wrapped as unknown as T;
 }
 
-export const Platform = { isMobile: false, isDesktop: true };
+export const Platform = {
+    isDesktop: true,
+    isDesktopApp: true,
+    isMobile: false,
+    isMobileApp: false,
+    isIosApp: false,
+    isAndroidApp: false,
+};
 
 export function setIcon(element: FakeElement, name: string): void {
     element.setAttribute('data-icon', name);

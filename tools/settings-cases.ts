@@ -298,7 +298,7 @@ async function main(): Promise<void> {
     // ------------------------------------------- 8. События и переезд записей
     {
         // Браузерные глобальные объекты: плагин планирует запись через window.
-        (global as { window?: unknown }).window = global;
+        (globalThis as { window?: unknown }).window = globalThis;
 
         const stub = fakePlugin({ version: SCHEMA_VERSION, settings: {}, notes: {} });
         const store = new DashboardStore(stub.plugin);
@@ -404,7 +404,7 @@ async function main(): Promise<void> {
 
     // ------------------------------------------ 9. Загрузка: мусор и старый формат
     {
-        (global as { window?: unknown }).window = global;
+        (globalThis as { window?: unknown }).window = globalThis;
 
         const broken = new DashboardStore(fakePlugin('не json').plugin);
         await broken.load();
