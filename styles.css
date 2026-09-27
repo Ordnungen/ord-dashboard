@@ -1,0 +1,448 @@
+/* ORDdashboard styles */
+
+/* Two zones: scrolling content and the link graph pinned to the bottom. */
+.view-content:has(> .ord-dashboard) {
+    overflow: hidden;
+    padding: 0;
+}
+
+.ord-dashboard {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.ord-dashboard__content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding: var(--size-4-3);
+}
+
+/* --- Link graph pinned to the bottom --- */
+.ord-dashboard__graph {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    height: 33%;
+    min-height: 150px;
+    background-color: var(--background-primary);
+    border-top: 1px solid var(--background-modifier-border);
+}
+
+.ord-dashboard__graph.is-small {
+    height: 22%;
+}
+
+.ord-dashboard__graph.is-large {
+    height: 50%;
+}
+
+.ord-dashboard__graph.is-collapsed {
+    /* A collapsed graph is a header and nothing else: no leftover canvas space. */
+    height: auto;
+    min-height: 0;
+}
+
+.ord-dashboard__graph.is-collapsed .ord-dashboard__graph-body {
+    display: none;
+}
+
+.ord-dashboard__graph.is-collapsed .ord-dashboard__section-icon {
+    transform: rotate(-90deg);
+}
+
+.ord-dashboard__graph-header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--size-2-2);
+    padding: var(--size-2-3) var(--size-4-3);
+    color: var(--text-muted);
+    cursor: var(--cursor);
+}
+
+.ord-dashboard__graph-header:hover {
+    color: var(--text-normal);
+}
+
+.ord-dashboard__graph-stats {
+    margin-inline-start: auto;
+    color: var(--text-faint);
+    font-size: var(--font-ui-smaller);
+}
+
+.ord-dashboard__graph-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2-1);
+}
+
+.ord-dashboard__graph-body {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.ord-dashboard__graph-canvas-wrap {
+    width: 100%;
+    height: 100%;
+}
+
+.ord-dashboard__graph-canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    touch-action: none;
+}
+
+.ord-dashboard__graph-canvas.is-grabbing {
+    cursor: grabbing;
+}
+
+.ord-dashboard__graph-status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--size-4-4);
+    background-color: var(--background-primary);
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+    pointer-events: none;
+}
+
+.ord-dashboard__graph-status.is-hidden {
+    display: none;
+}
+
+/* --- Search --- */
+.ord-dashboard__search {
+    position: relative;
+    margin-bottom: var(--size-4-4);
+}
+
+.ord-dashboard__search-input {
+    width: 100%;
+}
+
+.ord-dashboard__search-results {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    z-index: var(--layer-menu);
+    max-height: 40vh;
+    overflow-y: auto;
+    margin-top: var(--size-2-1);
+    padding: var(--size-2-2);
+    background-color: var(--background-primary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+    box-shadow: var(--shadow-s);
+}
+
+.ord-dashboard__search-results.is-hidden {
+    display: none;
+}
+
+.ord-dashboard__search-item {
+    padding: var(--size-4-2);
+    border-radius: var(--radius-s);
+}
+
+.ord-dashboard__search-item:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.ord-dashboard__search-empty {
+    padding: var(--size-4-3);
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+}
+
+/* --- Statistics --- */
+.ord-dashboard__stats {
+    /* One font size for all four cards; it steps down only when one of the
+       values is long enough to need more room. */
+    --ord-dashboard-stat-size: var(--font-ui-large);
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--size-4-2);
+    margin-bottom: var(--size-4-4);
+}
+
+.ord-dashboard__stats.is-dense {
+    --ord-dashboard-stat-size: var(--font-ui-medium);
+}
+
+.ord-dashboard__stats.is-dense-2 {
+    --ord-dashboard-stat-size: var(--font-ui-small);
+}
+
+.ord-dashboard__stat {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--size-2-1);
+    min-width: 0;
+    padding: var(--size-4-2) var(--size-4-3);
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+}
+
+.ord-dashboard__stat-value {
+    /* The core's own dashboard never breaks a number in half: a long total is
+       shortened in the view, and the line stays whole here. */
+    overflow: hidden;
+    font-size: var(--ord-dashboard-stat-size);
+    font-weight: var(--font-semibold);
+    font-variant-numeric: tabular-nums;
+    line-height: var(--line-height-tight);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ord-dashboard__stat-label {
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* --- Sections --- */
+.ord-dashboard__section {
+    margin-bottom: var(--size-4-4);
+}
+
+.ord-dashboard__section-header {
+    display: flex;
+    align-items: center;
+    gap: var(--size-2-2);
+    margin-bottom: var(--size-2-3);
+    color: var(--text-muted);
+    cursor: var(--cursor);
+}
+
+.ord-dashboard__section-header:hover {
+    color: var(--text-normal);
+}
+
+.ord-dashboard__section-icon {
+    display: flex;
+    --icon-size: var(--icon-xs);
+    transition: transform 100ms ease-in-out;
+}
+
+.ord-dashboard__section.is-collapsed .ord-dashboard__section-icon {
+    transform: rotate(-90deg);
+}
+
+.ord-dashboard__section.is-collapsed .ord-dashboard__section-body {
+    display: none;
+}
+
+.ord-dashboard__section-count {
+    margin-inline-start: auto;
+    padding: 0 var(--size-2-2);
+    background-color: var(--background-modifier-hover);
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-smaller);
+}
+
+.ord-dashboard__section-title {
+    font-size: var(--font-ui-smaller);
+    font-weight: var(--font-semibold);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.ord-dashboard__section-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2-2);
+}
+
+/* --- Rows --- */
+.ord-dashboard__row {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2-1);
+    padding: var(--size-4-2) var(--size-4-3);
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+}
+
+.ord-dashboard__row.is-clickable,
+.ord-dashboard__card.is-clickable {
+    cursor: var(--cursor);
+}
+
+.ord-dashboard__row.is-clickable:hover,
+.ord-dashboard__card.is-clickable:hover {
+    background-color: var(--background-modifier-hover);
+}
+
+.ord-dashboard__row.is-center {
+    align-items: center;
+    color: var(--text-accent);
+    border-style: dashed;
+}
+
+.ord-dashboard__row-title {
+    overflow: hidden;
+    font-size: var(--font-ui-small);
+    font-weight: var(--font-medium);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ord-dashboard__row-meta {
+    color: var(--text-faint);
+    font-size: var(--font-ui-smaller);
+}
+
+/* --- Review cards --- */
+.ord-dashboard__card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--size-2-3);
+    padding: var(--size-4-2) var(--size-4-3);
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: var(--radius-m);
+}
+
+.ord-dashboard__card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--size-4-2);
+}
+
+.ord-dashboard__card-status {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--size-4-2);
+    font-size: var(--font-ui-smaller);
+}
+
+.ord-dashboard__badge {
+    padding: 0 var(--size-2-2);
+    border-radius: var(--radius-s);
+    font-size: var(--font-ui-smaller);
+    white-space: nowrap;
+}
+
+/* Stage colours come from the Obsidian palette, so they follow the theme. */
+.ord-dashboard__badge.is-stage-0 {
+    background-color: rgba(var(--color-red-rgb), 0.18);
+    color: var(--color-red);
+}
+
+.ord-dashboard__badge.is-stage-1 {
+    background-color: rgba(var(--color-orange-rgb), 0.18);
+    color: var(--color-orange);
+}
+
+.ord-dashboard__badge.is-stage-2 {
+    background-color: rgba(var(--color-blue-rgb), 0.18);
+    color: var(--color-blue);
+}
+
+.ord-dashboard__badge.is-stage-3 {
+    background-color: rgba(var(--color-purple-rgb), 0.18);
+    color: var(--color-purple);
+}
+
+.ord-dashboard__badge.is-stage-4 {
+    background-color: rgba(var(--color-green-rgb), 0.18);
+    color: var(--color-green);
+}
+
+.ord-dashboard__progress {
+    height: 4px;
+    overflow: hidden;
+    background-color: var(--background-modifier-border);
+    border-radius: var(--radius-s);
+}
+
+.ord-dashboard__progress-fill {
+    width: var(--ord-dashboard-progress, 0%);
+    height: 100%;
+    background-color: var(--text-accent);
+    border-radius: var(--radius-s);
+}
+
+.ord-dashboard__status {
+    color: var(--text-muted);
+}
+
+.ord-dashboard__status.is-overdue {
+    color: var(--text-error);
+}
+
+.ord-dashboard__status.is-muted {
+    color: var(--text-faint);
+}
+
+.ord-dashboard__empty {
+    padding: var(--size-4-3);
+    color: var(--text-muted);
+    font-size: var(--font-ui-small);
+    text-align: center;
+}
+
+/* --- Confirm dialog --- */
+.ord-dashboard-confirm-body {
+    margin-bottom: var(--size-4-2);
+    color: var(--text-normal);
+}
+
+/* --- Wide sidebars and mobile --- */
+@media (min-width: 600px) {
+    .ord-dashboard__stats {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+body.is-mobile .ord-dashboard__content {
+    padding: var(--size-4-2);
+}
+
+/* Touch targets on mobile: keep rows comfortably tappable. */
+body.is-mobile .ord-dashboard__row,
+body.is-mobile .ord-dashboard__card {
+    padding: var(--size-4-3);
+}
+
+/* The panel is narrower on mobile, so the whole stat row starts a step smaller. */
+body.is-mobile .ord-dashboard__stats {
+    --ord-dashboard-stat-size: var(--font-ui-medium);
+}
+
+body.is-mobile .ord-dashboard__stats.is-dense {
+    --ord-dashboard-stat-size: var(--font-ui-small);
+}
+
+body.is-mobile .ord-dashboard__stats.is-dense-2 {
+    --ord-dashboard-stat-size: var(--font-ui-smaller);
+}
+
+/* iOS zooms into inputs below 16px; keep the search field at 16px on mobile. */
+body.is-mobile .ord-dashboard__search-input {
+    font-size: 16px;
+}
+
+/* Ribbon entry point can be hidden from the settings tab. */
+.ord-dashboard-ribbon-hidden {
+    display: none;
+}

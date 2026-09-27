@@ -1,0 +1,33 @@
+{
+    "name": "ord-dashboard",
+    "version": "0.1.0",
+    "description": "Shows note analytics and lists the notes that are ready to refresh.",
+    "main": "main.js",
+    "type": "module",
+    "scripts": {
+        "dev": "node esbuild.config.mjs",
+        "build": "node esbuild.config.mjs production",
+        "typecheck": "tsc --noEmit --skipLibCheck",
+        "lint": "eslint .",
+        "check": "npm run typecheck && npm run lint",
+        "cases": "node esbuild.config.mjs tools && node .cache/tools/graph-cases.cjs && node .cache/tools/settings-cases.cjs && node .cache/tools/plugin-cases.cjs",
+        "analyze": "node esbuild.config.mjs tools && node .cache/tools/vault-report.cjs",
+        "version": "node version-bump.mjs && git add manifest.json versions.json"
+    },
+    "keywords": [
+        "obsidian",
+        "plugin",
+        "analytics",
+        "spaced-repetition"
+    ],
+    "author": "Ordnung",
+    "license": "MIT",
+    "devDependencies": {
+        "@types/node": "^22.0.0",
+        "esbuild": "^0.25.5",
+        "eslint": "^9.39.0",
+        "eslint-plugin-obsidianmd": "^0.4.2",
+        "obsidian": "^1.13.0",
+        "typescript": "^5.8.0"
+    }
+}
