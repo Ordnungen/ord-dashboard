@@ -29,7 +29,7 @@ npm run analyze -- "<vault>" --survey=4000   # read-only report over a real vaul
 npm run build    # production build
 ```
 
-The analytics file of a real vault is the thing to be careful with: `npm run analyse` only reads, and the
+The analytics file of a real vault is the thing to be careful with: `npm run analyze` only reads, and the
 plugin itself never touches note contents.
 
 ## What a pull request should contain
