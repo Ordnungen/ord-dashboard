@@ -373,8 +373,7 @@ export const createSpan = (options?: ElementOptions): FakeElement => document.cr
 
 export const createEl = (tag: string, options?: ElementOptions): FakeElement => document.createEl(tag, options);
 
-export const getComputedStyle = (element: FakeElement): { color: string; opacity: string; getPropertyValue: () => string } =>
-    computedStyle(element);
+export const getComputedStyle = (element: FakeElement) => computedStyle(element);
 
 // Плагин берёт «сейчас» из Date.now: в проверках время идёт через clock.
 Date.now = () => clock.now();
