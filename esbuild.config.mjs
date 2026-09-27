@@ -36,15 +36,15 @@ if (tools) {
         bundle: true,
         platform: "node",
         alias: { obsidian: "./tools/obsidian-stub.ts" },
-        format: "cjs",
+        format: "esm",
         target: "node20",
         logLevel: "warning",
         treeShaking: true,
     };
-    await esbuild.build({ ...shared, entryPoints: ["tools/vault-report.ts"], outfile: ".cache/tools/vault-report.cjs" });
-    await esbuild.build({ ...shared, entryPoints: ["tools/graph-cases.ts"], outfile: ".cache/tools/graph-cases.cjs" });
-    await esbuild.build({ ...shared, entryPoints: ["tools/settings-cases.ts"], outfile: ".cache/tools/settings-cases.cjs" });
-    await esbuild.build({ ...shared, entryPoints: ["tools/plugin-cases.ts"], outfile: ".cache/tools/plugin-cases.cjs" });
+    await esbuild.build({ ...shared, entryPoints: ["tools/vault-report.ts"], outfile: ".cache/tools/vault-report.mjs" });
+    await esbuild.build({ ...shared, entryPoints: ["tools/graph-cases.ts"], outfile: ".cache/tools/graph-cases.mjs" });
+    await esbuild.build({ ...shared, entryPoints: ["tools/settings-cases.ts"], outfile: ".cache/tools/settings-cases.mjs" });
+    await esbuild.build({ ...shared, entryPoints: ["tools/plugin-cases.ts"], outfile: ".cache/tools/plugin-cases.mjs" });
     process.exit(0);
 }
 

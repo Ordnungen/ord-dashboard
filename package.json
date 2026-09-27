@@ -10,8 +10,8 @@
         "typecheck": "tsc --noEmit --skipLibCheck",
         "lint": "eslint .",
         "check": "npm run typecheck && npm run lint",
-        "cases": "node esbuild.config.mjs tools && node .cache/tools/graph-cases.cjs && node .cache/tools/settings-cases.cjs && node .cache/tools/plugin-cases.cjs",
-        "analyze": "node esbuild.config.mjs tools && node .cache/tools/vault-report.cjs",
+        "cases": "node esbuild.config.mjs tools && node .cache/tools/graph-cases.mjs && node .cache/tools/settings-cases.mjs && node .cache/tools/plugin-cases.mjs",
+        "analyze": "node esbuild.config.mjs tools && node .cache/tools/vault-report.mjs",
         "version": "node version-bump.mjs && git add manifest.json versions.json"
     },
     "keywords": [

@@ -15,7 +15,7 @@ import { DashboardStore } from '../src/storage';
 import { DEFAULT_SETTINGS } from '../src/settings';
 import { computeRecentlyActive, computeReviewQueue, computeTopNotes, computeTotals } from '../src/metrics';
 import { dictionaries, t } from '../src/i18n';
-import fs from 'node:fs';
+import { fs } from './node-io';
 
 let failures = 0;
 let checks = 0;
@@ -298,7 +298,7 @@ async function main(): Promise<void> {
     // ------------------------------------------- 8. События и переезд записей
     {
         // Браузерные глобальные объекты: плагин планирует запись через window.
-        (globalThis as { window?: unknown }).window = globalThis;
+        (global as { window?: unknown }).window = global;
 
         const stub = fakePlugin({ version: SCHEMA_VERSION, settings: {}, notes: {} });
         const store = new DashboardStore(stub.plugin);
@@ -404,7 +404,7 @@ async function main(): Promise<void> {
 
     // ------------------------------------------ 9. Загрузка: мусор и старый формат
     {
-        (globalThis as { window?: unknown }).window = globalThis;
+        (global as { window?: unknown }).window = global;
 
         const broken = new DashboardStore(fakePlugin('не json').plugin);
         await broken.load();

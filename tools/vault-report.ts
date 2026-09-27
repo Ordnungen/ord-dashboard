@@ -11,7 +11,7 @@
 // ---------------------------------------------------------------------------
 
 import { say, sayErr } from './output';
-import fs from 'node:fs';
+import { fs } from './node-io';
 import {
     OverviewSampler, titleFromPath,
     type IndexHandling, type RelevanceLevel,

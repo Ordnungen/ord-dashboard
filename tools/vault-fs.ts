@@ -7,8 +7,8 @@
 // псевдонимы, блоки кода (их ядро не считает), регистр имён, относительные пути.
 // ---------------------------------------------------------------------------
 
-import fs from 'node:fs';
-import path from 'node:path';
+import { fs } from './node-io';
+import { path } from './node-io';
 
 export interface ParsedNote {
     /** Свойства заметки (упрощённый YAML) и текст без свойств. */

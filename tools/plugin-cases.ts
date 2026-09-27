@@ -10,7 +10,7 @@ import {
     clock, FakeApp, installGlobals, Modal, Notice, setLanguage, TFile, TFolder,
     type FakeElement, type WorkspaceLeaf,
 } from './obsidian-stub';
-import fs from 'node:fs';
+import { fs } from './node-io';
 import * as render from '../src/graph-render';
 
 import DashboardPlugin from '../src/main';
