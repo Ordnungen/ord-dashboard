@@ -7,6 +7,7 @@
 // вес повторных ссылок, циклы, юникод, производительность.
 // ---------------------------------------------------------------------------
 
+import { say } from './output';
 import fs from 'node:fs';
 import {
     OverviewSampler, titleFromPath,
@@ -24,7 +25,7 @@ let checks = 0;
 function assert(name: string, condition: boolean, extra?: string): void {
     checks += 1;
     if (!condition) failures += 1;
-    console.log(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
+    say(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
 }
 
 type Links = Record<string, Record<string, number>>;
@@ -852,5 +853,5 @@ function indexedVault(options: { projects?: number; docs?: number; sections?: nu
         paths(tight).has('папка/рядом.md'), String(tight.nodes.length));
 }
 
-console.log(`\nпроверок: ${checks}, провалено: ${failures}`);
+say(`\nпроверок: ${checks}, провалено: ${failures}`);
 process.exitCode = failures === 0 ? 0 : 1;

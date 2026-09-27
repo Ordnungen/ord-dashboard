@@ -30,9 +30,9 @@ export default defineConfig([
             globals: { process: "readonly", console: "readonly", setImmediate: "readonly", Date: "readonly" },
         },
         rules: {
-            // Инструмент печатает отчёт в консоль — это его назначение, поэтому
-            // правило о лишнем логировании здесь неверно.
-            "no-console": "off",
+            // `no-console` включён и для инструментов: отчёт идёт в поток
+            // (tools/output.ts), а перехват журнала плагина в проверках помечен
+            // точечным eslint-disable с причиной.
             "obsidianmd/rule-custom-message": "off",
             "obsidianmd/no-nodejs-modules": "off", // причина: инструмент работает в Node, а не в Obsidian
             "obsidianmd/hardcoded-config-path": "off", // причина: проверки подставляют фиктивные пути хранилища

@@ -5,6 +5,7 @@
 //   npm run cases
 // ---------------------------------------------------------------------------
 
+import { say } from './output';
 import {
     clock, FakeApp, installGlobals, Modal, Notice, setLanguage, TFile, TFolder,
     type FakeElement, type WorkspaceLeaf,
@@ -22,7 +23,7 @@ let checks = 0;
 function assert(name: string, condition: boolean, extra?: string): void {
     checks += 1;
     if (!condition) failures += 1;
-    console.log(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
+    say(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
 }
 
 const DAY_MS = 86_400_000;
@@ -161,7 +162,7 @@ async function main(): Promise<void> {
     process.on('unhandledRejection', (reason: unknown) => {
         failures += 1;
         checks += 1;
-        console.log(`FAIL необработанный отказ в коде плагина — ${String(reason)}`);
+        say(`FAIL необработанный отказ в коде плагина — ${String(reason)}`);
     });
 
     // ------------------------------------------------- 1. Загрузка плагина
@@ -911,7 +912,7 @@ async function main(): Promise<void> {
         await asPlugin(plugin).onunload();
     }
 
-    console.log(`\nпроверок: ${checks}, провалено: ${failures}`);
+    say(`\nпроверок: ${checks}, провалено: ${failures}`);
     process.exitCode = failures === 0 ? 0 : 1;
 }
 

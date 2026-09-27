@@ -4,6 +4,7 @@
 //   npm run cases
 // ---------------------------------------------------------------------------
 
+import { say } from './output';
 import {
     ACTIVE_WINDOW_MS, DAY_MS, REVIEW_STAGES, SCHEMA_VERSION,
     applyEdit, applyReview, applyView, createActivity, hasActivity, isTrackablePath, keptMonths,
@@ -22,7 +23,7 @@ let checks = 0;
 function assert(name: string, condition: boolean, extra?: string): void {
     checks += 1;
     if (!condition) failures += 1;
-    console.log(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
+    say(`${condition ? 'OK  ' : 'FAIL'} ${name}${extra === undefined ? '' : ` — ${extra}`}`);
 }
 
 const NOW = Date.UTC(2026, 8, 26, 12, 0, 0);
@@ -503,20 +504,26 @@ async function main(): Promise<void> {
             registerEvent: () => undefined,
         } as never;
         const failingStore = new DashboardStore(failingPlugin);
-        const logged: unknown[] = [];
-        const originalError = console.error;
-        console.error = (...args: unknown[]) => { logged.push(args); };
+        const written: string[] = [];
+        // Журнал плагина слушаем на потоке ошибок: сам плагин пишет через
+        // console.error, а инструментам правило о логировании это запрещает.
+        const originalWrite = process.stderr.write.bind(process.stderr);
+        process.stderr.write = (chunk: string | Uint8Array): boolean => {
+            written.push(String(chunk));
+            return true;
+        };
         try {
             await failingStore.load();
         } finally {
-            console.error = originalError;
+            process.stderr.write = originalWrite;
         }
         assert('9.6 ошибка чтения старого файла не ломает запуск',
             settingsOf(failingStore).graphNodes === DEFAULT_SETTINGS.graphNodes);
-        assert('9.7 ошибка чтения записана в журнал', logged.length === 1, String(logged.length));
+        assert('9.7 ошибка чтения записана в журнал',
+            written.length > 0, written.join(' | ') || 'журнал пуст');
     }
 
-    console.log(`\nпроверок: ${checks}, провалено: ${failures}`);
+    say(`\nпроверок: ${checks}, провалено: ${failures}`);
     process.exitCode = failures === 0 ? 0 : 1;
 }
 

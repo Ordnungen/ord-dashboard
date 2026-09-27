@@ -10,6 +10,7 @@
 //        --write=vault.json  — сохранить снимок связей для тестов
 // ---------------------------------------------------------------------------
 
+import { say, sayErr } from './output';
 import fs from 'node:fs';
 import {
     OverviewSampler, titleFromPath,
@@ -177,17 +178,17 @@ function survey(links: Record<string, Record<string, number>>, options: Options)
         return sorted[Math.floor(sorted.length / 2)] ?? 0;
     };
 
-    console.log(`хранилище:      ${notes.length} заметок`);
-    console.log(`проверено:      ${rows.length} заметок (каждая ${step}-я)`);
-    console.log(`настройки:      глубина ${options.depth}, отбор ${options.relevance}, `
+    say(`хранилище:      ${notes.length} заметок`);
+    say(`проверено:      ${rows.length} заметок (каждая ${step}-я)`);
+    say(`настройки:      глубина ${options.depth}, отбор ${options.relevance}, `
         + `оглавления ${options.index}, место ${options.place ? 'да' : 'нет'}, предел ${options.limit}`);
-    console.log(`узлов:          медиана ${median(rows.map((row) => row.nodes))}, `
+    say(`узлов:          медиана ${median(rows.map((row) => row.nodes))}, `
         + `наибольшее ${Math.max(...rows.map((row) => row.nodes), 0)}`);
-    console.log(`связей:         медиана ${median(rows.map((row) => row.edges))}, `
+    say(`связей:         медиана ${median(rows.map((row) => row.edges))}, `
         + `наибольшее ${Math.max(...rows.map((row) => row.edges), 0)}`);
-    console.log(`время:          медиана ${median(rows.map((row) => row.ms)).toFixed(0)} мс, `
+    say(`время:          медиана ${median(rows.map((row) => row.ms)).toFixed(0)} мс, `
         + `наибольшее ${Math.max(...rows.map((row) => row.ms), 0).toFixed(0)} мс`);
-    console.log(`доля вне области: медиана ${(median(rows.map((row) => row.outsideShare)) * 100).toFixed(0)}%`);
+    say(`доля вне области: медиана ${(median(rows.map((row) => row.outsideShare)) * 100).toFixed(0)}%`);
 
     const missingMates = rows.filter((row) => row.mates > 0 && row.matesShown < row.mates);
     const tooWide = rows.filter((row) => row.outsideShare > 0.5 && row.nodes > 10);
@@ -195,28 +196,28 @@ function survey(links: Record<string, Record<string, number>>, options: Options)
     // ничего, кроме неё самой и её разделов: значит, отбор их выбросил.
     const tooNarrow = rows.filter((row) => row.noteLinks > 0 && row.visible <= 1 && row.mates > 0);
 
-    console.log(`\nсоседи по папке показаны не полностью: ${missingMates.length} из ${rows.length}`);
+    say(`\nсоседи по папке показаны не полностью: ${missingMates.length} из ${rows.length}`);
     for (const row of missingMates.slice(0, 10)) {
-        console.log(`  ${row.matesShown}/${row.mates}  ${row.path}`);
+        say(`  ${row.matesShown}/${row.mates}  ${row.path}`);
     }
-    console.log(`\nбольше половины показанного — вне области заметки: ${tooWide.length} из ${rows.length}`);
+    say(`\nбольше половины показанного — вне области заметки: ${tooWide.length} из ${rows.length}`);
     for (const row of [...tooWide].sort((a, b) => b.outsideShare - a.outsideShare).slice(0, 10)) {
-        console.log(`  ${(row.outsideShare * 100).toFixed(0)}%  узлов ${row.nodes}  ${row.path}`);
+        say(`  ${(row.outsideShare * 100).toFixed(0)}%  узлов ${row.nodes}  ${row.path}`);
     }
-    console.log(`\nподозрительно пусто при наличии соседей: ${tooNarrow.length} из ${rows.length}`);
+    say(`\nподозрительно пусто при наличии соседей: ${tooNarrow.length} из ${rows.length}`);
     for (const row of tooNarrow.slice(0, 10)) {
-        console.log(`  заметок ${row.visible}  соседей ${row.mates}  ${row.path}`);
+        say(`  заметок ${row.visible}  соседей ${row.mates}  ${row.path}`);
     }
 
     const widest = [...rows].sort((a, b) => b.nodes - a.nodes).slice(0, 5);
-    console.log('\nсамые большие графы:');
+    say('\nсамые большие графы:');
     for (const row of widest) {
-        console.log(`  узлов ${row.nodes}, связей ${row.edges}, вне области ${(row.outsideShare * 100).toFixed(0)}%  ${row.path}`);
+        say(`  узлов ${row.nodes}, связей ${row.edges}, вне области ${(row.outsideShare * 100).toFixed(0)}%  ${row.path}`);
     }
     const slowest = [...rows].sort((a, b) => b.ms - a.ms).slice(0, 5);
-    console.log('\nсамые долгие:');
+    say('\nсамые долгие:');
     for (const row of slowest) {
-        console.log(`  ${row.ms.toFixed(0)} мс, узлов ${row.nodes}  ${row.path}`);
+        say(`  ${row.ms.toFixed(0)} мс, узлов ${row.nodes}  ${row.path}`);
     }
 }
 
@@ -225,7 +226,7 @@ function main(): void {
 
     if (options.survey > 0) {
         if (!options.vault && !options.snapshot) {
-            console.error('для сплошной проверки нужен путь к хранилищу или снимок связей');
+            sayErr('для сплошной проверки нужен путь к хранилищу или снимок связей');
             process.exit(2);
         }
         const links = options.snapshot
@@ -244,7 +245,7 @@ function main(): void {
         root = options.note || snapshot.root;
     } else {
         if (!options.vault || !options.note) {
-            console.error('нужен путь к хранилищу и к заметке');
+            sayErr('нужен путь к хранилищу и к заметке');
             process.exit(2);
         }
         links = readVault(options.vault);
@@ -252,14 +253,14 @@ function main(): void {
 
     if (options.write) {
         fs.writeFileSync(options.write, JSON.stringify({ root, links }), 'utf8');
-        console.log(`снимок связей: ${options.write} (${Object.keys(links).length} заметок)`);
+        say(`снимок связей: ${options.write} (${Object.keys(links).length} заметок)`);
         if (!options.note) return;
     }
 
     const notes = Object.keys(links).sort();
     const folder = root.slice(0, root.lastIndexOf('/'));
     if (!notes.includes(root)) {
-        console.error(`заметка не найдена: ${root}`);
+        sayErr(`заметка не найдена: ${root}`);
         process.exit(2);
     }
 
@@ -286,7 +287,7 @@ function main(): void {
     while (!sampler.step(8)) { /* ждём */ }
     const graph = sampler.result;
     if (!graph) {
-        console.error('граф не построен');
+        sayErr('граф не построен');
         process.exit(1);
     }
     const taken = performance.now() - started;
@@ -301,13 +302,13 @@ function main(): void {
     const kept = new Set(graph.nodes.map((node) => node.path));
     const mates = notes.filter((note) => note !== root && note.slice(0, note.lastIndexOf('/')) === folder);
 
-    console.log(`хранилище:  ${notes.length} заметок`);
-    console.log(`открыта:    ${root}`);
-    console.log(`настройки:  глубина ${options.depth}, отбор ${options.relevance}, оглавления ${options.index}, `
+    say(`хранилище:  ${notes.length} заметок`);
+    say(`открыта:    ${root}`);
+    say(`настройки:  глубина ${options.depth}, отбор ${options.relevance}, оглавления ${options.index}, `
         + `место ${options.place ? 'учитывается' : 'нет'}, предел ${options.limit}`);
-    console.log(`итог:       ${graph.nodes.length} узлов, ${graph.edges.length} связей, `
+    say(`итог:       ${graph.nodes.length} узлов, ${graph.edges.length} связей, `
         + `${taken.toFixed(0)} мс, отбор сработал: ${graph.filtered}`);
-    console.log(`контекст:   ${graph.nodes.filter((node) => node.context).length} узлов-оглавлений`);
+    say(`контекст:   ${graph.nodes.filter((node) => node.context).length} узлов-оглавлений`);
     {
         // Что увидят глаза: подписи других заметок в панели. Их прозрачность считается
         // от масштаба вписывания графа: пока граф просто вписан, имён не видно, и они
@@ -316,29 +317,29 @@ function main(): void {
         const params = vaultGraphParams(options.vault);
         const fade = params.textFadeMultiplier;
         const show = (alpha: number): string => (alpha <= 0 ? 'скрыты' : alpha.toFixed(2));
-        console.log(`подписи:    у вписанного графа ${show(labelAlpha(1, params, 1))}`
+        say(`подписи:    у вписанного графа ${show(labelAlpha(1, params, 1))}`
             + `, приблизил ×2 — ${show(labelAlpha(2, params, 1))}`
             + `, ×4 — ${show(labelAlpha(4, params, 1))}`
             + ` (проявление из graph.json: ${fade})`);
     }
 
-    console.log(`\nсоседи по папке (${folder || 'корень хранилища'}, всего ${mates.length}):`);
-    if (mates.length === 0) console.log('  нет');
+    say(`\nсоседи по папке (${folder || 'корень хранилища'}, всего ${mates.length}):`);
+    if (mates.length === 0) say('  нет');
     for (const mate of mates) {
-        console.log(`  ${kept.has(mate) ? 'ПОКАЗАНА  ' : 'не показана'} ${titleFromPath(mate).slice(0, 64)}`);
+        say(`  ${kept.has(mate) ? 'ПОКАЗАНА  ' : 'не показана'} ${titleFromPath(mate).slice(0, 64)}`);
     }
 
     const normal = graph.nodes.filter((node) => !node.context).sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
     const foreign = normal.filter((node) => !node.path.startsWith(folder ? `${folder}/` : ''));
-    console.log(`\nпоказаны без контекста: ${normal.length}, из них вне папки открытой заметки: ${foreign.length}`);
-    console.log('по убыванию близости (близость 1 = ближе, чем случайная заметка):');
+    say(`\nпоказаны без контекста: ${normal.length}, из них вне папки открытой заметки: ${foreign.length}`);
+    say('по убыванию близости (близость 1 = ближе, чем случайная заметка):');
     for (const node of normal.slice(0, 40)) {
         const where = node.path.slice(0, node.path.lastIndexOf('/')) || '(корень)';
-        console.log(`  ${(node.score ?? 0).toFixed(2).padStart(7)}  ${node.degree.toString().padStart(3)}·  `
+        say(`  ${(node.score ?? 0).toFixed(2).padStart(7)}  ${node.degree.toString().padStart(3)}·  `
             + `${titleFromPath(node.path).slice(0, 36).padEnd(38)}${where.slice(0, 44).padEnd(46)}`
             + `[${outDegree(node.path)} исх / ${inDegree.get(node.path) ?? 0} вх]`);
     }
-    if (normal.length > 40) console.log(`  ... и ещё ${normal.length - 40}`);
+    if (normal.length > 40) say(`  ... и ещё ${normal.length - 40}`);
 }
 
 main();

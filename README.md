@@ -2,7 +2,7 @@
 
 *Tracks how you work with your notes and tells you which ones are ready to refresh.*
 
-![ORDdashboard cover](ord-dashboard-cover.png)
+![ORDdashboard cover](ord-dashboard-cover.jpg)
 
 The dashboard lives in the sidebar: it keeps its state while you work, and notes open in a new tab
 without closing it. The scrollable part holds search, statistics and note lists; the **link graph** is
