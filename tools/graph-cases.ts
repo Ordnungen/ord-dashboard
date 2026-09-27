@@ -73,7 +73,7 @@ function run(vault: VaultBuilder, options: RunOptions = {}): OverviewGraph {
         maxEdges: options.maxEdges ?? 40000,
         scope: options.scope ?? 'local',
         rootPath: options.rootPath,
-        // Так же, как панель: открытая заметка всегда в обзоре хранилища.
+        // Так же как панель: открытая заметка всегда в обзоре хранилища.
         focusPath: options.rootPath,
         depth: options.depth ?? 2,
         relevance: options.relevance ?? 'normal',

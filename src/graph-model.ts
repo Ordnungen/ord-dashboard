@@ -11,7 +11,7 @@
 // section indexes, so "two hops away" is not distance at all: a plain
 // breadth-first walk pulls in the whole vault through those indexes (measured on
 // a 3 234-note vault: 3 183 notes at two hops, 95% of the lines belonging to
-// seven index notes). Instead the walk from the open note is scored:
+// seven index notes). Instead, the walk from the open note is scored:
 //
 //   * a random walk from the open note over the candidate links (focused
 //     PageRank), so a note linked many times scores higher and a hub that links
